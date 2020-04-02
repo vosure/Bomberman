@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 7291924693514950838}
   - component: {fileID: 2832849225304590390}
   - component: {fileID: 8445509478885577255}
-  m_Layer: 0
-  m_Name: Quad
+  m_Layer: 8
+  m_Name: Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
