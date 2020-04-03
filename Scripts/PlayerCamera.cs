@@ -4,20 +4,17 @@ using UnityEngine;
 
 public class PlayerCamera : MonoBehaviour
 {
-    public GameObject player;
+    private Vector3 rotation;
 
-    private Vector3 offset;
-
-    private void Start()
+    private void Awake()
     {
-        offset = transform.position - player.transform.position;
+        float rotationY = Mathf.Sign(transform.position.z) == 1 ? 180.0f : 0.0f;
+        rotation = new Vector3(70.0f, rotationY, 0.0f);
+        transform.transform.eulerAngles = rotation;
     }
 
-    private void LateUpdate()
+    public void UpdateRotation()
     {
-        float x = player.transform.position.x;// - offset.x;
-        float z = player.transform.position.z;// - offset.z;
-
-        transform.position = new Vector3(x, transform.position.y, z);
+        transform.transform.eulerAngles = rotation;
     }
 }
