@@ -111,13 +111,14 @@ public class MapGenerator : MonoBehaviour
         GenerateWall(topLeft, bottomLeft);
     }
 
+    //TODO(vosure):Should be generated on server!
     private void GenerateWall(Vector3 From, Vector3 To)
     {
         int x = (int)From.x;
         int z = (int)From.z;
-        for (int i = 0; i <= mapSize.x; i++)
+        for (int i = 0; i < mapSize.x + 2; i++)
         {
-            Vector3 position = Vector3.Lerp(From, To, i / (mapSize.x + 1));
+            Vector3 position = Vector3.Lerp(From, To, i / (mapSize.x + 2));
             GameObject newBlock = Instantiate(wallPrefab, position, Quaternion.identity);
             newBlock.transform.parent = mapHolder;
         }

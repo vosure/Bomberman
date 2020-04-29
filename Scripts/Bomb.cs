@@ -1,48 +1,51 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System.Runtime.CompilerServices;
+using UnityEngine.Networking;
 
-public class Bomb : MonoBehaviour
+public class Bomb : NetworkBehaviour
 {
-    public AudioClip explosionSound;
+    public AudioClip[] explosionSound;
     public GameObject explosionPrefab;
     public LayerMask collisionMask;
+
     private bool exploded = false;
 
     void Start()
     {
-        Invoke("Explode", 3f);
+        Invoke("CmdExplode", 3f);
     }
 
-    void Explode()
+    [Command]
+    void CmdExplode()
     {
-        AudioSource.PlayClipAtPoint(explosionSound, transform.position);
+        AudioSource.PlayClipAtPoint(explosionSound[Random.Range(0, 5)], transform.position);
+
+        if (NetworkServer.active)
+            NetworkServer.Spawn(Instantiate(explosionPrefab, transform.position, Quaternion.identity));
 
 
-        Instantiate(explosionPrefab, transform.position, Quaternion.identity);
-
-
-        StartCoroutine(CreateExplosions(Vector3.forward));
-        StartCoroutine(CreateExplosions(Vector3.right));
-        StartCoroutine(CreateExplosions(Vector3.back));
-        StartCoroutine(CreateExplosions(Vector3.left));
+        CmdCreateExplosions(Vector3.forward);
+        CmdCreateExplosions(Vector3.right);
+        CmdCreateExplosions(Vector3.back);
+        CmdCreateExplosions(Vector3.left);
 
         GetComponent<MeshRenderer>().enabled = false;
         exploded = true;
         transform.Find("Collider").gameObject.SetActive(false);
-        Destroy(gameObject, .3f);
+        NetworkServer.Destroy(gameObject);
     }
 
     public void OnTriggerEnter(Collider other)
     {
         if (!exploded && other.CompareTag("Explosion"))
         {
-            CancelInvoke("Explode");
-            Explode();
+            CancelInvoke("CmdExplode");
+            CmdExplode();
         }
     }
 
-    private IEnumerator CreateExplosions(Vector3 direction)
+    [Command]
+    private void CmdCreateExplosions(Vector3 direction)
     {
         //TODO(vosure): Get number of explosions from player script, can be increased by power up
         for (int i = 1; i < 3; i++)
@@ -52,18 +55,16 @@ public class Bomb : MonoBehaviour
 
             if (!hit.collider)
             {
-                Instantiate(explosionPrefab, transform.position + (i * direction), explosionPrefab.transform.rotation);
+                NetworkServer.Spawn(Instantiate(explosionPrefab, transform.position + (i * direction), explosionPrefab.transform.rotation));
             }
             else
             {
                 if (hit.collider.tag == "Box")
                 {
-                    Destroy(hit.collider.gameObject);
+                    NetworkServer.Destroy(hit.collider.gameObject);
                     break;
                 }
             }
-
-            yield return new WaitForSeconds(.05f);
         }
 
     }

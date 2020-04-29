@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
-public class PlayerDropBomb : MonoBehaviour
+public class PlayerDropBomb : NetworkBehaviour
 {
     public GameObject bombPrefab;
 
@@ -13,19 +14,23 @@ public class PlayerDropBomb : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (this.isLocalPlayer && Input.GetKeyDown(KeyCode.Space))
         {
-            DropBomb();
+            CmdDropBomb();
         }
     }
 
-    private void DropBomb()
+    [Command]
+    private void CmdDropBomb()
     {
         if (bombPrefab)
         {
-            Instantiate(bombPrefab,
-                new Vector3(Mathf.Round(transform.position.x + 0.5f) - 0.5f, bombPrefab.transform.position.y, Mathf.RoundToInt(transform.position.z + 0.5f) - 0.5f),
-                bombPrefab.transform.rotation);
+            if (NetworkServer.active)
+            {
+                NetworkServer.Spawn(Instantiate(bombPrefab,
+                 new Vector3(Mathf.Round(transform.position.x + 0.5f) - 0.5f, bombPrefab.transform.position.y, Mathf.RoundToInt(transform.position.z + 0.5f) - 0.5f),
+                 bombPrefab.transform.rotation));
+            }
         }
     }
 }
