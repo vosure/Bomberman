@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MapGenerator : MonoBehaviour
 {
-    public GameObject wallPrefab; //TODO(vosure): Name environmnet objects and save it somewhere as prefabs
+    public GameObject wallPrefab;
     public GameObject floorPrefab;
     public GameObject obstaclePrefab;
     public GameObject boxPrefab;

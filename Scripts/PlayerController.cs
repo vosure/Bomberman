@@ -8,10 +8,9 @@ public class PlayerController : MonoBehaviour
 {
     public PlayerCamera playerCamera;
 
-    public float movementSpeed = 5.0f;
-
     private Rigidbody rigidBody;
     private Animator animator;
+    private Player player;
 
     private bool fliped;
 
@@ -22,6 +21,7 @@ public class PlayerController : MonoBehaviour
 
         rigidBody = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
+        player = GetComponent<Player>();
     }
 
     void Update()
@@ -68,7 +68,7 @@ public class PlayerController : MonoBehaviour
 
     private void MoveUp()
     {
-        rigidBody.velocity = new Vector3(rigidBody.velocity.x, rigidBody.velocity.y, movementSpeed);
+        rigidBody.velocity = new Vector3(rigidBody.velocity.x, rigidBody.velocity.y, player.movementSpeed);
         transform.rotation = Quaternion.Euler(0, 0, 0);
         playerCamera.UpdateRotation();
         animator.SetBool("Walking", true);
@@ -76,7 +76,7 @@ public class PlayerController : MonoBehaviour
 
     private void MoveDown()
     {
-        rigidBody.velocity = new Vector3(rigidBody.velocity.x, rigidBody.velocity.y, -movementSpeed);
+        rigidBody.velocity = new Vector3(rigidBody.velocity.x, rigidBody.velocity.y, -player.movementSpeed);
         transform.rotation = Quaternion.Euler(0, 180, 0);
         playerCamera.UpdateRotation();
 
@@ -85,7 +85,7 @@ public class PlayerController : MonoBehaviour
 
     private void MoveLeft()
     {
-        rigidBody.velocity = new Vector3(-movementSpeed, rigidBody.velocity.y, rigidBody.velocity.z);
+        rigidBody.velocity = new Vector3(-player.movementSpeed, rigidBody.velocity.y, rigidBody.velocity.z);
         transform.rotation = Quaternion.Euler(0, 270, 0);
         playerCamera.UpdateRotation();
 
@@ -94,7 +94,7 @@ public class PlayerController : MonoBehaviour
 
     private void MoveRight()
     {
-        rigidBody.velocity = new Vector3(movementSpeed, rigidBody.velocity.y, rigidBody.velocity.z);
+        rigidBody.velocity = new Vector3(player.movementSpeed, rigidBody.velocity.y, rigidBody.velocity.z);
         transform.rotation = Quaternion.Euler(0, 90, 0);
         playerCamera.UpdateRotation();
 

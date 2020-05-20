@@ -9,15 +9,11 @@ public class PlayerSetup : NetworkBehaviour
     [SerializeField]
     Behaviour[] componentsToDisable;
 
-    [SerializeField]
-    string remoteLayerName = "RemotePlayer";
-
     private void Start()
     {
         if (!isLocalPlayer)
         {
             DisableComponents();
-            AssignRemoteLayer();
         }
         else
         {
@@ -43,11 +39,6 @@ public class PlayerSetup : NetworkBehaviour
         Player player = GetComponent<Player>();
 
         GameManager.RegisterPlayer(netID, player);
-    }
-
-    void AssignRemoteLayer()
-    {
-        gameObject.layer = LayerMask.NameToLayer(remoteLayerName);
     }
 
     void DisableComponents()

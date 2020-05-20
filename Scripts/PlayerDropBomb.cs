@@ -7,9 +7,11 @@ public class PlayerDropBomb : NetworkBehaviour
 {
     public GameObject bombPrefab;
 
+    private Player player;
+
     void Start()
     {
-
+        player = GetComponent<Player>();
     }
 
     void Update()
@@ -27,9 +29,11 @@ public class PlayerDropBomb : NetworkBehaviour
         {
             if (NetworkServer.active)
             {
-                NetworkServer.Spawn(Instantiate(bombPrefab,
-                 new Vector3(Mathf.Round(transform.position.x + 0.5f) - 0.5f, bombPrefab.transform.position.y, Mathf.RoundToInt(transform.position.z + 0.5f) - 0.5f),
-                 bombPrefab.transform.rotation));
+                Vector3 bombPosition = new Vector3(Mathf.Round(transform.position.x + 0.5f) - 0.5f, bombPrefab.transform.position.y, Mathf.RoundToInt(transform.position.z + 0.5f) - 0.5f);
+                GameObject bomb  = Instantiate(bombPrefab, bombPosition, bombPrefab.transform.rotation);
+                bomb.GetComponent<Bomb>().explosions = player.explosions;
+
+                NetworkServer.Spawn(bomb);
             }
         }
     }

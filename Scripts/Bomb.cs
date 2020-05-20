@@ -8,7 +8,11 @@ public class Bomb : NetworkBehaviour
     public GameObject explosionPrefab;
     public LayerMask collisionMask;
 
+    public GameObject powerUpPrefab;
+
     private bool exploded = false;
+
+    public int explosions;
 
     void Start()
     {
@@ -47,8 +51,7 @@ public class Bomb : NetworkBehaviour
     [Command]
     private void CmdCreateExplosions(Vector3 direction)
     {
-        //TODO(vosure): Get number of explosions from player script, can be increased by power up
-        for (int i = 1; i < 3; i++)
+        for (int i = 1; i < explosions + 1; i++)
         {
             RaycastHit hit;
             Physics.Raycast(transform.position + new Vector3(0, .5f, 0), direction, out hit, i, collisionMask);
@@ -61,11 +64,49 @@ public class Bomb : NetworkBehaviour
             {
                 if (hit.collider.tag == "Box")
                 {
+                    SpawnPowerUpAtPosition(hit.collider.gameObject.transform.position);
+                    NetworkServer.Destroy(hit.collider.gameObject);
+                    break;
+                }
+                if (hit.collider.tag == "PowerUp")
+                {
                     NetworkServer.Destroy(hit.collider.gameObject);
                     break;
                 }
             }
         }
+    }
 
+    public void SpawnPowerUpAtPosition(Vector3 position)
+    {
+        if (Random.Range(1, 100) <= GameSettings.powerUpChance)
+        {
+            int random = Random.Range(1, 3);
+            GameObject powerUp = Instantiate(powerUpPrefab, position, powerUpPrefab.transform.rotation);
+            switch (random)
+            {
+                case 1:
+                    {
+                        powerUp.GetComponent<PowerUp>().CreateFirePowerUp();
+                        break;
+                    }
+                case 2:
+                    {
+                        powerUp.GetComponent<PowerUp>().CreateSpeedPowerUp();
+                        break;
+                    }
+                case 3:
+                    {
+                        powerUp.GetComponent<PowerUp>().CreateBombPowerUp();
+                        break;
+                    }
+                case 4:
+                    {
+                        powerUp.GetComponent<PowerUp>().CreateKickPowerUp();
+                        break;
+                    }
+            }
+            NetworkServer.Spawn(powerUp);
+        }
     }
 }

@@ -7,12 +7,17 @@ public class Player : NetworkBehaviour
 {
     public PlayerCamera playerCamera;
 
+    public int explosions = 1;
+    public float movementSpeed = 2.5f;
+    public int bombs = 1;
+    public bool canKick = false;
+
     [SyncVar]
-    private bool _isDead = false;
-    public bool isDead
+    private bool isDead = false;
+    public bool IsDead
     {
-        get { return _isDead; }
-        protected set { _isDead = value; }
+        get { return isDead; }
+        protected set { isDead = value; }
     }
 
     [SerializeField]
@@ -67,8 +72,35 @@ public class Player : NetworkBehaviour
     [ClientRpc]
     public void RpcTakeDamage()
     {
-        Debug.Log("Took damage!");
         Die();
+    }
+
+    [ClientRpc]
+    public void RpcApplyPowerUp(int powerUpType)
+    {
+        switch (powerUpType)
+        {
+            case 0:
+                {
+                    explosions++;
+                    break;
+                }
+            case 1:
+                {
+                    bombs++;
+                    break;
+                }
+            case 2:
+                {
+                    movementSpeed += 0.5f;
+                    break;
+                }
+            case 3:
+                {
+                    canKick = true;
+                    break;
+                }
+        }
     }
 
     private void Die()
@@ -96,8 +128,6 @@ public class Player : NetworkBehaviour
         {
             GameManager.singleton.SetSceneCameraActice(true);
         }
-
-        Debug.Log(transform.name + " is dead!");
 
         StartCoroutine(Respawn());
     }
@@ -144,8 +174,17 @@ public class Player : NetworkBehaviour
     {
         if (other.CompareTag("Explosion"))
         {
-                GameManager.GetPlayer(gameObject.name).RpcTakeDamage();
-                Debug.Log("qwe");
+            GameManager.GetPlayer(gameObject.name).RpcTakeDamage();
+            Debug.Log("hit by explosion");
+        }
+        if (other.CompareTag("PowerUp"))
+        {
+            PowerUp powerUp = other.gameObject.GetComponent<PowerUp>();
+            NetworkServer.Destroy(other.gameObject);
+
+            Debug.Log("Took Power Up");
+
+            GameManager.GetPlayer(gameObject.name).RpcApplyPowerUp((int)powerUp.type);
         }
     }
 }
