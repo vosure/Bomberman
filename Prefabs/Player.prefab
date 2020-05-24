@@ -581,7 +581,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 1
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!136 &13644608
 CapsuleCollider:
@@ -623,6 +623,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bombPrefab: {fileID: 124052, guid: 6291891f72f724c4eae6be6052e78735, type: 3}
+  shouldCooldown: 0
 --- !u!114 &5574684794297417769
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -657,6 +658,9 @@ MonoBehaviour:
   movementSpeed: 2.5
   bombs: 1
   canKick: 0
+  collisionMask:
+    serializedVersion: 2
+    m_Bits: 256
   disableOnDeath:
   - {fileID: 2627364877080563415}
   - {fileID: 2309879913057283247}

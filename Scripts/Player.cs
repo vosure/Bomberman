@@ -12,6 +12,8 @@ public class Player : NetworkBehaviour
     public int bombs = 1;
     public bool canKick = false;
 
+    public LayerMask collisionMask;
+
     [SyncVar]
     private bool isDead = false;
     public bool IsDead
@@ -34,6 +36,54 @@ public class Player : NetworkBehaviour
     //private GameObject spawnEffect;
 
     private bool firstSetup = true;
+
+    private const RigidbodyConstraints moveAlongX =
+        RigidbodyConstraints.FreezeRotationX |
+        RigidbodyConstraints.FreezeRotationY |
+        RigidbodyConstraints.FreezeRotationZ |
+        RigidbodyConstraints.FreezePositionY |
+        RigidbodyConstraints.FreezePositionZ;
+
+    private const RigidbodyConstraints moveAlongZ =
+        RigidbodyConstraints.FreezeRotationX |
+        RigidbodyConstraints.FreezeRotationY |
+        RigidbodyConstraints.FreezeRotationZ |
+        RigidbodyConstraints.FreezePositionY |
+        RigidbodyConstraints.FreezePositionX;
+
+    private void Update()
+    {
+        if (canKick)
+        {
+            RaycastHit hit;
+            Physics.Raycast(transform.position, transform.forward, out hit, 1.0f, collisionMask);
+
+            if (hit.collider)
+            {
+                if (hit.collider.gameObject.CompareTag("Bomb"))
+                {
+                    GameObject bomb = hit.collider.gameObject;
+                    bomb.GetComponentInParent<Rigidbody>().isKinematic = false;
+                    KickBomb(bomb);
+                }
+            }
+        }
+    }
+
+    private void KickBomb(GameObject bomb)
+    {
+        bool freezeX = transform.forward.z == 1.0f || (transform.forward.z == -1.0f) ? true : false;
+        bomb.GetComponentInParent<Rigidbody>().constraints = freezeX ? moveAlongZ : moveAlongX;
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+
+        //Debug.Log(transform.forward);
+
+        Gizmos.DrawLine(transform.position, transform.position + transform.forward * transform.localScale.x * 1.0f);
+    }
 
     public void SetupPlayer()
     {
@@ -88,6 +138,7 @@ public class Player : NetworkBehaviour
             case 1:
                 {
                     bombs++;
+                    GetComponent<PlayerDropBomb>().shouldCooldown = true;
                     break;
                 }
             case 2:
@@ -170,6 +221,14 @@ public class Player : NetworkBehaviour
         //Destroy(spawnEffectInstance, 3.0f);
     }
 
+    //public void OnCollisionEnter(Collision collision)
+    //{
+    //    if (collision.collider.CompareTag("Bomb"))
+    //    {
+    //        Debug.Log("Hit the bomb");
+    //    }
+    //}
+
     public void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Explosion"))
@@ -186,5 +245,9 @@ public class Player : NetworkBehaviour
 
             GameManager.GetPlayer(gameObject.name).RpcApplyPowerUp((int)powerUp.type);
         }
+        //if (other.CompareTag("Bomb"))
+        //{
+        //    Debug.Log("position on the bomb" + other.gameObject.GetComponentInParent<Transform>().position);
+        //}
     }
 }

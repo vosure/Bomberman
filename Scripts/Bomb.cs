@@ -81,8 +81,8 @@ public class Bomb : NetworkBehaviour
     {
         if (Random.Range(1, 100) <= GameSettings.powerUpChance)
         {
-            int random = Random.Range(1, 3);
             GameObject powerUp = Instantiate(powerUpPrefab, position, powerUpPrefab.transform.rotation);
+            int random = Random.Range(1, 5);
             switch (random)
             {
                 case 1:
