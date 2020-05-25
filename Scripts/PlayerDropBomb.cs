@@ -9,52 +9,41 @@ public class PlayerDropBomb : NetworkBehaviour
 
     private Player player;
 
-    private int bombsAvailable = 1;
+    public int bombsAvailable = 1;
     private float dropCooldown = 3.0f;
-    public bool shouldCooldown = false;
-    bool canDrop = false;
 
     private float timeStamp;
 
     void Start()
     {
         player = GetComponent<Player>();
+        bombsAvailable = player.bombs;
     }
 
     void Update()
     {
         if (this.isLocalPlayer)
         {
-            if (bombsAvailable > 0)
-            {
-                canDrop = true;
-            }
-            else
-            {
-                canDrop = false;
-            }
-            if (shouldCooldown)
-            {
-                if (timeStamp <= Time.time)
-                {
-
-                    bombsAvailable = bombsAvailable + 1 < player.bombs ? bombsAvailable + 1 : player.bombs;
-                    if (bombsAvailable == player.bombs)
-                        shouldCooldown = false;
-                }
-
-            }
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                if (canDrop)
+                if (bombsAvailable > 0)
                 {
                     bombsAvailable = bombsAvailable - 1 < 0 ? 0 : bombsAvailable - 1;
                     CmdDropBomb();
-                    timeStamp = Time.time + dropCooldown;
-                    shouldCooldown = true;
+                    StartCoroutine(StartCooldown());
                 }
             }
         }
+    }
+
+    public IEnumerator StartCooldown()
+    {
+        float timeStamp = Time.time + dropCooldown;
+        while (timeStamp >= Time.time)
+        {
+            yield return null;
+        }
+        bombsAvailable = bombsAvailable + 1 < player.bombs ? bombsAvailable + 1 : player.bombs;
     }
 
     [Command]

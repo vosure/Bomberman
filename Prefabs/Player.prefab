@@ -623,6 +623,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bombPrefab: {fileID: 124052, guid: 6291891f72f724c4eae6be6052e78735, type: 3}
+  bombsAvailable: 1
   shouldCooldown: 0
 --- !u!114 &5574684794297417769
 MonoBehaviour:
@@ -655,9 +656,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerCamera: {fileID: 4559560223708764915}
   explosions: 1
-  movementSpeed: 2.5
-  bombs: 1
-  canKick: 0
+  movementSpeed: 4
+  bombs: 4
+  canKick: 1
   collisionMask:
     serializedVersion: 2
     m_Bits: 256

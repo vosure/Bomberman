@@ -4,5 +4,5 @@ using UnityEngine;
 
 public class GameSettings
 {
-    public static int powerUpChance = 30;
+    public static int powerUpChance = 100;
 }

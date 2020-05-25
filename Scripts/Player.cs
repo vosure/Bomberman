@@ -138,7 +138,7 @@ public class Player : NetworkBehaviour
             case 1:
                 {
                     bombs++;
-                    GetComponent<PlayerDropBomb>().shouldCooldown = true;
+                    GetComponent<PlayerDropBomb>().bombsAvailable++;
                     break;
                 }
             case 2:

@@ -111,6 +111,10 @@ MonoBehaviour:
   powerUpPrefab: {fileID: 9041784484703776796, guid: 24f6ff40183b31047b12200d74f84685,
     type: 3}
   explosions: 0
+  fireTexture: {fileID: 2100000, guid: 77e79dce72ac8eb499bbe128feb9cd5f, type: 2}
+  bombTexture: {fileID: 2100000, guid: 37fa6ccad36e99b4fac6b996c02fd438, type: 2}
+  speedTexture: {fileID: 2100000, guid: 628d5b0064b7412439bfec35a72ad90d, type: 2}
+  bombKickTexture: {fileID: 2100000, guid: fcf2de865e66e4149ac9588e0035fc6f, type: 2}
 --- !u!54 &5407224
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -269,7 +273,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TransformSyncMode: 3
-  m_SendInterval: 0
+  m_SendInterval: 1
   m_SyncRotationAxis: 7
   m_RotationSyncCompression: 0
   m_SyncSpin: 0

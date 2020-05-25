@@ -14,6 +14,11 @@ public class Bomb : NetworkBehaviour
 
     public int explosions;
 
+    public Material fireTexture;
+    public Material bombTexture;
+    public Material speedTexture;
+    public Material bombKickTexture;
+
     void Start()
     {
         Invoke("CmdExplode", 3f);
@@ -64,7 +69,7 @@ public class Bomb : NetworkBehaviour
             {
                 if (hit.collider.tag == "Box")
                 {
-                    SpawnPowerUpAtPosition(hit.collider.gameObject.transform.position);
+                    CmdSpawnPowerUpAtPosition(hit.collider.gameObject.transform.position);
                     NetworkServer.Destroy(hit.collider.gameObject);
                     break;
                 }
@@ -77,36 +82,101 @@ public class Bomb : NetworkBehaviour
         }
     }
 
-    public void SpawnPowerUpAtPosition(Vector3 position)
+    //TODO(vosure): CLEAN THIS SHIT UP!!!
+    [Command]
+    public void CmdSpawnPowerUpAtPosition(Vector3 position)
     {
         if (Random.Range(1, 100) <= GameSettings.powerUpChance)
         {
-            GameObject powerUp = Instantiate(powerUpPrefab, position, powerUpPrefab.transform.rotation);
             int random = Random.Range(1, 5);
-            switch (random)
-            {
-                case 1:
-                    {
-                        powerUp.GetComponent<PowerUp>().CreateFirePowerUp();
-                        break;
-                    }
-                case 2:
-                    {
-                        powerUp.GetComponent<PowerUp>().CreateSpeedPowerUp();
-                        break;
-                    }
-                case 3:
-                    {
-                        powerUp.GetComponent<PowerUp>().CreateBombPowerUp();
-                        break;
-                    }
-                case 4:
-                    {
-                        powerUp.GetComponent<PowerUp>().CreateKickPowerUp();
-                        break;
-                    }
-            }
-            NetworkServer.Spawn(powerUp);
+
+            RpcCreatePowerUpOnOnClients(random, position);
+            CmdSpawnOnServer(random, position);
+            
         }
+    }
+
+    [Command]
+    public void CmdSpawnOnServer(int random, Vector3 position)
+    {
+        switch (random)
+        {
+            case 1:
+                {
+                    CreateFirePowerUp(powerUpPrefab);
+                    break;
+                }
+            case 2:
+                {
+                    CreateSpeedPowerUp(powerUpPrefab);
+                    break;
+                }
+            case 3:
+                {
+                    CreateBombPowerUp(powerUpPrefab);
+                    break;
+                }
+            case 4:
+                {
+                    CreateKickPowerUp(powerUpPrefab);
+                    break;
+                }
+        }
+
+        NetworkServer.Spawn(Instantiate(powerUpPrefab, position, powerUpPrefab.transform.rotation));
+    }
+
+    [ClientRpc]
+    public void RpcCreatePowerUpOnOnClients(int random, Vector3 position)
+    {
+        switch (random)
+        {
+            case 1:
+                {
+                    CreateFirePowerUp(powerUpPrefab);
+                    break;
+                }
+            case 2:
+                {
+                    CreateSpeedPowerUp(powerUpPrefab);
+                    break;
+                }
+            case 3:
+                {
+                    CreateBombPowerUp(powerUpPrefab);
+                    break;
+                }
+            case 4:
+                {
+                    CreateKickPowerUp(powerUpPrefab);
+                    break;
+                }
+        }
+
+        NetworkServer.Spawn(Instantiate(powerUpPrefab, position, powerUpPrefab.transform.rotation));
+    }
+
+    public void CreateFirePowerUp(GameObject powerUp)
+    {
+        powerUp.GetComponent<Renderer>().material = fireTexture;
+        powerUp.GetComponent<PowerUp>().type = PowerUp.PowerUpType.Fire;
+    }
+
+    public void CreateSpeedPowerUp(GameObject powerUp)
+    {
+        powerUp.GetComponent<Renderer>().material = speedTexture;
+        powerUp.GetComponent<PowerUp>().type = PowerUp.PowerUpType.Speed;
+    }
+
+    public void CreateBombPowerUp(GameObject powerUp)
+    {
+        powerUp.GetComponent<Renderer>().material = bombTexture;
+        powerUp.GetComponent<PowerUp>().type = PowerUp.PowerUpType.Bomb;
+    }
+
+    public void CreateKickPowerUp(GameObject powerUp)
+    {
+        powerUp.GetComponent<Renderer>().material = bombKickTexture;
+        powerUp.GetComponent<PowerUp>().type = PowerUp.PowerUpType.Kick;
     }
 }
