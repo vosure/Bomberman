@@ -8,16 +8,14 @@ public class Bomb : NetworkBehaviour
     public GameObject explosionPrefab;
     public LayerMask collisionMask;
 
-    public GameObject powerUpPrefab;
+    public GameObject firePowerUpPrefab;
+    public GameObject bombPowerUpPrefab;
+    public GameObject speedPowerUpPrefab;
+    //public GameObject kickPowerUpPrefab; //NOTE(vosure): Don't have this one
 
     private bool exploded = false;
 
     public int explosions;
-
-    public Material fireTexture;
-    public Material bombTexture;
-    public Material speedTexture;
-    public Material bombKickTexture;
 
     void Start()
     {
@@ -69,8 +67,8 @@ public class Bomb : NetworkBehaviour
             {
                 if (hit.collider.tag == "Box")
                 {
+                    hit.collider.gameObject.GetComponent<Box>().Destroy();
                     CmdSpawnPowerUpAtPosition(hit.collider.gameObject.transform.position);
-                    NetworkServer.Destroy(hit.collider.gameObject);
                     break;
                 }
                 if (hit.collider.tag == "PowerUp")
@@ -86,97 +84,114 @@ public class Bomb : NetworkBehaviour
     [Command]
     public void CmdSpawnPowerUpAtPosition(Vector3 position)
     {
+        Vector3 newPosition = new Vector3(position.x, -0.3f, position.z);
         if (Random.Range(1, 100) <= GameSettings.powerUpChance)
         {
-            int random = Random.Range(1, 5);
+            int random = Random.Range(1, 4);
 
-            RpcCreatePowerUpOnOnClients(random, position);
-            CmdSpawnOnServer(random, position);
-            
+            switch (random)
+            {
+                case 1:
+                    {
+                        NetworkServer.Spawn(Instantiate(firePowerUpPrefab, newPosition, Quaternion.identity));
+                        break;
+                    }
+                case 2:
+                    {
+                        NetworkServer.Spawn(Instantiate(bombPowerUpPrefab, newPosition, Quaternion.identity));
+                        break;
+                    }
+                case 3:
+                    {
+                        NetworkServer.Spawn(Instantiate(speedPowerUpPrefab, newPosition, Quaternion.identity));
+                        break;
+                    }
+            }
+
         }
     }
 
-    [Command]
-    public void CmdSpawnOnServer(int random, Vector3 position)
-    {
-        switch (random)
-        {
-            case 1:
-                {
-                    CreateFirePowerUp(powerUpPrefab);
-                    break;
-                }
-            case 2:
-                {
-                    CreateSpeedPowerUp(powerUpPrefab);
-                    break;
-                }
-            case 3:
-                {
-                    CreateBombPowerUp(powerUpPrefab);
-                    break;
-                }
-            case 4:
-                {
-                    CreateKickPowerUp(powerUpPrefab);
-                    break;
-                }
-        }
+    //[Command]
+    //public void CmdSpawnOnServer(int random, Vector3 position)
+    //{
+    //    switch (random)
+    //    {
+    //        case 1:
+    //            {
+    //                CreateFirePowerUp(powerUpPrefab);
+    //                break;
+    //            }
+    //        case 2:
+    //            {
+    //                CreateSpeedPowerUp(powerUpPrefab);
+    //                break;
+    //            }
+    //        case 3:
+    //            {
+    //                CreateBombPowerUp(powerUpPrefab);
+    //                break;
+    //            }
+    //        case 4:
+    //            {
+    //                CreateKickPowerUp(powerUpPrefab);
+    //                break;
+    //            }
+    //    }
 
-        NetworkServer.Spawn(Instantiate(powerUpPrefab, position, powerUpPrefab.transform.rotation));
-    }
+    //    NetworkServer.Spawn(Instantiate(powerUpPrefab, position, powerUpPrefab.transform.rotation));
+    //}
 
-    [ClientRpc]
-    public void RpcCreatePowerUpOnOnClients(int random, Vector3 position)
-    {
-        switch (random)
-        {
-            case 1:
-                {
-                    CreateFirePowerUp(powerUpPrefab);
-                    break;
-                }
-            case 2:
-                {
-                    CreateSpeedPowerUp(powerUpPrefab);
-                    break;
-                }
-            case 3:
-                {
-                    CreateBombPowerUp(powerUpPrefab);
-                    break;
-                }
-            case 4:
-                {
-                    CreateKickPowerUp(powerUpPrefab);
-                    break;
-                }
-        }
+    //[ClientRpc]
+    //public void RpcCreatePowerUpOnOnClients(int random, Vector3 position)
+    //{
+    //    switch (random)
+    //    {
+    //        case 1:
+    //            {
+    //                CreateFirePowerUp(powerUpPrefab);
+    //                break;
+    //            }
+    //        case 2:
+    //            {
+    //                CreateSpeedPowerUp(powerUpPrefab);
+    //                break;
+    //            }
+    //        case 3:
+    //            {
+    //                CreateBombPowerUp(powerUpPrefab);
+    //                break;
+    //            }
+    //        case 4:
+    //            {
+    //                CreateKickPowerUp(powerUpPrefab);
+    //                break;
+    //            }
+    //    }
 
-        NetworkServer.Spawn(Instantiate(powerUpPrefab, position, powerUpPrefab.transform.rotation));
-    }
+    //    NetworkServer.Spawn(Instantiate(powerUpPrefab, position, powerUpPrefab.transform.rotation));
+    //}
 
-    public void CreateFirePowerUp(GameObject powerUp)
-    {
-        powerUp.GetComponent<Renderer>().material = fireTexture;
-        powerUp.GetComponent<PowerUp>().type = PowerUp.PowerUpType.Fire;
-    }
+    //public void CreateFirePowerUp(GameObject powerUp)
+    //{
+    //    powerUp.GetComponent<Renderer>().material = fireTexture;
+    //    powerUp.GetComponent<PowerUp>().type = PowerUp.PowerUpType.Fire;
+    //}
 
-    public void CreateSpeedPowerUp(GameObject powerUp)
-    {
-        powerUp.GetComponent<Renderer>().material = speedTexture;
-        powerUp.GetComponent<PowerUp>().type = PowerUp.PowerUpType.Speed;
-    }
+    //public void CreateSpeedPowerUp(GameObject powerUp)
+    //{
+    //    powerUp.GetComponent<Renderer>().material = speedTexture;
+    //    powerUp.GetComponent<PowerUp>().type = PowerUp.PowerUpType.Speed;
+    //}
 
-    public void CreateBombPowerUp(GameObject powerUp)
-    {
-        powerUp.GetComponent<Renderer>().material = bombTexture;
-        powerUp.GetComponent<PowerUp>().type = PowerUp.PowerUpType.Bomb;
-    }
+    //public void CreateBombPowerUp(GameObject powerUp)
+    //{
+    //    powerUp.GetComponent<Renderer>().material = bombTexture;
+    //    powerUp.GetComponent<PowerUp>().type = PowerUp.PowerUpType.Bomb;
+    //}
 
-    public void CreateKickPowerUp(GameObject powerUp)
-    {
-        powerUp.GetComponent<Renderer>().material = bombKickTexture;
-        powerUp.GetComponent<PowerUp>().type = PowerUp.PowerUpType.Kick;
-    }
+    //public void CreateKickPowerUp(GameObject powerUp)
+    //{
+    //    powerUp.GetComponent<Renderer>().material = bombKickTexture;
+    //    powerUp.GetComponent<PowerUp>().type = PowerUp.PowerUpType.Kick;
+    //}
 }

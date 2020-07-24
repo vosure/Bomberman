@@ -108,13 +108,13 @@ MonoBehaviour:
   collisionMask:
     serializedVersion: 2
     m_Bits: 256
-  powerUpPrefab: {fileID: 9041784484703776796, guid: 24f6ff40183b31047b12200d74f84685,
+  firePowerUpPrefab: {fileID: 1000012970591572, guid: 7cafb89b5a0f61f479d0a748962abbbc,
+    type: 3}
+  bombPowerUpPrefab: {fileID: 1000013317980782, guid: 2cf6690298568294cb6b655c0a3aeb87,
+    type: 3}
+  speedPowerUpPrefab: {fileID: 1000013846074356, guid: 11e31a2ebb4e6e246bcf8c0ba034a031,
     type: 3}
   explosions: 0
-  fireTexture: {fileID: 2100000, guid: 77e79dce72ac8eb499bbe128feb9cd5f, type: 2}
-  bombTexture: {fileID: 2100000, guid: 37fa6ccad36e99b4fac6b996c02fd438, type: 2}
-  speedTexture: {fileID: 2100000, guid: 628d5b0064b7412439bfec35a72ad90d, type: 2}
-  bombKickTexture: {fileID: 2100000, guid: fcf2de865e66e4149ac9588e0035fc6f, type: 2}
 --- !u!54 &5407224
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.UI;
 using System.Collections;
 
 [RequireComponent(typeof(PlayerSetup))]
@@ -37,6 +38,13 @@ public class Player : NetworkBehaviour
 
     private bool firstSetup = true;
 
+    public GameObject canvas;
+
+    public Text bombText;
+    public Text speedText;
+    public Text fireText;
+    public Text kickText;
+
     private const RigidbodyConstraints moveAlongX =
         RigidbodyConstraints.FreezeRotationX |
         RigidbodyConstraints.FreezeRotationY |
@@ -50,6 +58,12 @@ public class Player : NetworkBehaviour
         RigidbodyConstraints.FreezeRotationZ |
         RigidbodyConstraints.FreezePositionY |
         RigidbodyConstraints.FreezePositionX;
+
+    private void Start()
+    {
+        if (isLocalPlayer)
+            canvas.SetActive(true);
+    }
 
     private void Update()
     {
@@ -68,21 +82,22 @@ public class Player : NetworkBehaviour
                 }
             }
         }
+
+        UpdadateUI();
+    }
+
+    void UpdadateUI()
+    {
+        bombText.text = "Кол-во бомб - " + bombs;
+        fireText.text = "Сила взрыва - " + explosions;
+        speedText.text = "Скорость передвижения - " + movementSpeed;
+        kickText.text = "Возможность пинать -" + (canKick ? "Да" : "Нет");
     }
 
     private void KickBomb(GameObject bomb)
     {
         bool freezeX = transform.forward.z == 1.0f || (transform.forward.z == -1.0f) ? true : false;
         bomb.GetComponentInParent<Rigidbody>().constraints = freezeX ? moveAlongZ : moveAlongX;
-    }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-
-        //Debug.Log(transform.forward);
-
-        Gizmos.DrawLine(transform.position, transform.position + transform.forward * transform.localScale.x * 1.0f);
     }
 
     public void SetupPlayer()
@@ -215,7 +230,7 @@ public class Player : NetworkBehaviour
         if (collider != null)
             collider.enabled = true;
 
-        playerCamera.UpdateRotation();
+        //playerCamera.UpdateRotation();
 
         //GameObject spawnEffectInstance = Instantiate(spawnEffect, transform.position, Quaternion.identity);
         //Destroy(spawnEffectInstance, 3.0f);

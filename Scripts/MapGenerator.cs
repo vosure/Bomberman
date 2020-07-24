@@ -75,6 +75,12 @@ public class MapGenerator : MonoBehaviour
         prefab.GetComponent<Renderer>().material = materials[Random.Range(0, materials.Length)];
     }
 
+    private void SetRandonRotation(GameObject prefab)
+    {
+        float[] zAxisDegree = { 0.0f, 90.0f, 180.0f, 270.0f } ;
+        prefab.transform.rotation = Quaternion.Euler(00.0f, zAxisDegree[Random.Range(0, 4)], 0);
+    }
+
     private void InstantiateOject(int x, int y)
     {
         //TODO(vosure): Collapse
@@ -85,8 +91,9 @@ public class MapGenerator : MonoBehaviour
             {
                 if (Random.Range(0.0f, 100.0f) > (100 - objectsOnMapPercent))
                 {
-                    SetRandomMaterial(boxPrefab, boxMaterials);
+                    //SetRandomMaterial(boxPrefab, boxMaterials);
                     GameObject obj = Instantiate(boxPrefab, position, Quaternion.identity);
+                    SetRandonRotation(obj);
                     obj.transform.parent = mapHolder;
                 }
             }
@@ -111,8 +118,9 @@ public class MapGenerator : MonoBehaviour
                 {
                     if (Random.Range(0.0f, 100.0f) > (100 - objectsOnMapPercent))
                     {
-                        SetRandomMaterial(boxPrefab, boxMaterials);
+                        //SetRandomMaterial(boxPrefab, boxMaterials);
                         GameObject obj = Instantiate(boxPrefab, position, Quaternion.identity);
+                        SetRandonRotation(obj);
                         obj.transform.parent = mapHolder;
                     }
                 }
@@ -125,8 +133,9 @@ public class MapGenerator : MonoBehaviour
                 if (Random.Range(0.0f, 100.0f) > (100 - objectsOnMapPercent))
                 {
 
-                    SetRandomMaterial(boxPrefab, boxMaterials);
+                    //SetRandomMaterial(boxPrefab, boxMaterials);
                     GameObject obj = Instantiate(boxPrefab, position, Quaternion.identity);
+                    SetRandonRotation(obj);
                     obj.transform.parent = mapHolder;
                 }
             }

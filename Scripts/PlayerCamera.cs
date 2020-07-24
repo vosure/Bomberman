@@ -9,7 +9,7 @@ public class PlayerCamera : MonoBehaviour
     private void Awake()
     {
         float rotationY = Mathf.Sign(transform.position.z) == 1 ? 180.0f : 0.0f;
-        rotation = new Vector3(70.0f, rotationY, 0.0f);
+        rotation = new Vector3(75.0f, rotationY, 0.0f);
         transform.transform.eulerAngles = rotation;
     }
 
