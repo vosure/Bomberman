@@ -67,6 +67,7 @@ public class Player : NetworkBehaviour
 
     private void Update()
     {
+        //Debug.Log("FPS - " + 1.0f / Time.deltaTime);
         if (canKick)
         {
             RaycastHit hit;

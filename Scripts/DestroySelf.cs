@@ -1,12 +1,19 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 
 public class DestroySelf : MonoBehaviour
 {
-    public float Delay = 3f;
+    public float delay = 3.0f;
 
-    void Start ()
+    private void Start ()
     {
-        Destroy (gameObject, Delay);
+        Debug.Log("DESTROYED BOX HAS BEEN SPAWNED");
+        Invoke("DestroyAfterDelay", delay);
+    }
+
+    private void DestroyAfterDelay()
+    {
+        NetworkServer.Destroy(gameObject);
     }
 }

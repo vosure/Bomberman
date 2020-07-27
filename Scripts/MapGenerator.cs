@@ -3,26 +3,16 @@ using UnityEngine.Networking;
 
 public class MapGenerator : MonoBehaviour
 {
-    public GameObject wallPrefab;
-    public Material[] wallMaterials;
+    public GameObject[] floorPrefabs;
 
-    public GameObject floorPrefab;
-    public Material[] floorMaterials;
-
-    public GameObject obstaclePrefab;
-    public Material[] obstacleMaterials;
+    public GameObject[] obstaclePrefabs;
 
     public GameObject boxPrefab;
-    public Material[] boxMaterials;
 
-    public GameObject decorationPrefab;
+    public GameObject[] decorationBlockPrefabs;
     public GameObject[] decorationObjects;
 
     public Vector2 mapSize;
-
-    public bool generateWalls;
-    public bool generateObstacles;
-    public bool generateBoxes;
 
     //NOTE(vosure): Do I actually need that?!
     [Range(0, 1)]
@@ -31,19 +21,22 @@ public class MapGenerator : MonoBehaviour
     [Range(0, 100)]
     public float objectsOnMapPercent = 100.0f;
 
-    private Transform mapHolder;
 
     public GameObject[] playerPositions;
 
     public int decorationAreaSize = 4;
 
+    public bool spawnDecorations = false;
+
+    private Transform mapHolder;
     //TODO(vosure): change to one dimensional array
     private MapObject[,] mapGrid;
+
 
     void Start()
     {
         //NOTE(vosure): Probably I should use int width and height, instead of Vector2 mapSize!?
-        GenerateMap();
+        //GenerateMap();
     }
 
     public void GenerateMap()
@@ -66,12 +59,7 @@ public class MapGenerator : MonoBehaviour
             }
         }
 
-        if (generateWalls)
-        {
-            GenerateWallsAround();
-        }
-
-        //SetPlayerPositions();
+        SetPlayerPositions();
 
         for (int x = 0; x < mapSize.x; x++)
         {
@@ -86,55 +74,56 @@ public class MapGenerator : MonoBehaviour
                             SetRandonRotation(obj);
                             obj.transform.parent = mapHolder;
 
-                            Vector3 floorPosition = new Vector3(mapGrid[x, y].position.x, 0, mapGrid[x, y].position.z);
-                            SetRandomMaterial(floorPrefab, floorMaterials);
-                            GameObject newTile = Instantiate(floorPrefab, floorPosition, Quaternion.Euler(Vector3.right * 90));
-                            newTile.transform.localScale = Vector3.one * (1 - outlinePersent);
-                            newTile.transform.parent = mapHolder;
+                            
+
+                            SpawnFloorOnPosition(mapGrid[x, y].position);
 
                             break;
                         }
                     case (MapObjectType.Obstacle):
                         {
-                            SetRandomMaterial(obstaclePrefab, obstacleMaterials);
-                            GameObject obj = Instantiate(obstaclePrefab, mapGrid[x, y].position, Quaternion.identity);
+                            //SetRandomMaterial(obstaclePrefab, obstacleMaterials);
+                            GameObject obj = Instantiate(obstaclePrefabs[Random.Range(0, obstaclePrefabs.Length)], mapGrid[x, y].position, Quaternion.identity);
                             obj.transform.parent = mapHolder;
 
-                            Vector3 floorPosition = new Vector3(mapGrid[x, y].position.x, 0, mapGrid[x, y].position.z);
-                            SetRandomMaterial(floorPrefab, floorMaterials);
-                            GameObject newTile = Instantiate(floorPrefab, floorPosition, Quaternion.Euler(Vector3.right * 90));
-                            newTile.transform.localScale = Vector3.one * (1 - outlinePersent);
-                            newTile.transform.parent = mapHolder;
+                            SpawnFloorOnPosition(mapGrid[x, y].position);
 
                             break;
                         }
                     case (MapObjectType.Empty):
                         {
-                            Vector3 floorPosition = new Vector3(mapGrid[x, y].position.x, 0, mapGrid[x, y].position.z);
-                            SetRandomMaterial(floorPrefab, floorMaterials);
-                            GameObject newTile = Instantiate(floorPrefab, floorPosition, Quaternion.Euler(Vector3.right * 90));
-                            newTile.transform.localScale = Vector3.one * (1 - outlinePersent);
-                            newTile.transform.parent = mapHolder;
+                            SpawnFloorOnPosition(mapGrid[x, y].position);
 
                             break;
                         }
                     case (MapObjectType.Decoration):
                         {
-                            GameObject decorationBlock = Instantiate(decorationPrefab, mapGrid[x, y].position, Quaternion.identity);
-                            decorationBlock.transform.parent = mapHolder;
-
-                            if (Random.value < 0.5)
+                            if (spawnDecorations)
                             {
-                                Vector3 decorationOjbectPositions = new Vector3(mapGrid[x, y].position.x, 1.0f, mapGrid[x, y].position.z);
-                                //TODO(vosure): Fix zero elements array!
-                                GameObject decorationOjbect = Instantiate(decorationObjects[Random.Range(0, decorationObjects.Length)], decorationOjbectPositions, Quaternion.identity);
-                                decorationOjbect.transform.parent = mapHolder;
+                                GameObject decorationBlock = Instantiate(decorationBlockPrefabs[Random.Range(0, decorationBlockPrefabs.Length)], mapGrid[x, y].position, Quaternion.identity);
+                                decorationBlock.transform.parent = mapHolder;
+
+                                if (Random.value < 0.5)
+                                {
+                                    Vector3 decorationOjbectPositions = new Vector3(mapGrid[x, y].position.x, 1.0f, mapGrid[x, y].position.z);
+                                    //TODO(vosure): Fix zero elements array!
+                                    GameObject decorationOjbect = Instantiate(decorationObjects[Random.Range(0, decorationObjects.Length)], decorationOjbectPositions, Quaternion.identity);
+                                    decorationOjbect.transform.parent = mapHolder;
+                                }
                             }
                             break;
                         }
                 }
             }
         }
+    }
+
+    private void SpawnFloorOnPosition(Vector3 position)
+    {
+        Vector3 floorPosition = new Vector3(position.x, 0.0f, position.z);
+        GameObject newTile = Instantiate(floorPrefabs[Random.Range(0, floorPrefabs.Length)], floorPosition, Quaternion.Euler(Vector3.right * 90));
+        newTile.transform.localScale = Vector3.one * (1.0f - outlinePersent);
+        newTile.transform.parent = mapHolder;
     }
 
     private void SetRandomMaterial(GameObject prefab, Material[] materials)
@@ -158,13 +147,8 @@ public class MapGenerator : MonoBehaviour
             {
                 if ((y >= 2 + decorationAreaSize && y <= mapSize.y - 2 - decorationAreaSize) || (x >= 2 + decorationAreaSize && x <= mapSize.x - 2 - decorationAreaSize))
                 {
-                    if (Random.Range(0.0f, 100.0f) > (100 - objectsOnMapPercent))
+                    if (ShouldSpawn())
                     {
-                        //SetRandomMaterial(boxPrefab, boxMaterials);
-                        //GameObject obj = Instantiate(boxPrefab, position, Quaternion.identity);
-                        //SetRandonRotation(obj);
-                        //obj.transform.parent = mapHolder;
-
                         mapGrid[x, y] = new MapObject(position, MapObjectType.Box, true);
                     }
                 }
@@ -177,45 +161,28 @@ public class MapGenerator : MonoBehaviour
             {
                 if (x % 2 != 0)
                 {
-                    if (generateObstacles) //NOTE(vosure) just for better customization, delete later
+                    if (ShouldSpawn())
                     {
-                        if (Random.Range(0.0f, 100.0f) > (100 - objectsOnMapPercent))
-                        {
-                            //SetRandomMaterial(obstaclePrefab, obstacleMaterials);
-                            //GameObject obj = Instantiate(obstaclePrefab, position, Quaternion.identity);
-                            //obj.transform.parent = mapHolder;
-                            mapGrid[x, y] = new MapObject(position, MapObjectType.Obstacle, true);
-                        }
+                        mapGrid[x, y] = new MapObject(new Vector3(position.x, 0.0f, position.z), MapObjectType.Obstacle, true);
                     }
+
                 }
                 else
                 {
-                    if (generateBoxes)
+
+                    if (ShouldSpawn())
                     {
-                        if (Random.Range(0.0f, 100.0f) > (100 - objectsOnMapPercent))
-                        {
-                            //SetRandomMaterial(boxPrefab, boxMaterials);
-                            //GameObject obj = Instantiate(boxPrefab, position, Quaternion.identity);
-                            //SetRandonRotation(obj);
-                            //obj.transform.parent = mapHolder;
-                            mapGrid[x, y] = new MapObject(position, MapObjectType.Box, true);
-                        }
+                        mapGrid[x, y] = new MapObject(position, MapObjectType.Box, true);
                     }
+
                 }
             }
             else
             {
-                if (generateBoxes)
-                {
-                    if (Random.Range(0.0f, 100.0f) > (100 - objectsOnMapPercent))
-                    {
 
-                        //SetRandomMaterial(boxPrefab, boxMaterials);
-                        //GameObject obj = Instantiate(boxPrefab, position, Quaternion.identity);
-                        //SetRandonRotation(obj);
-                        //obj.transform.parent = mapHolder;
-                        mapGrid[x, y] = new MapObject(position, MapObjectType.Box, true);
-                    }
+                if (ShouldSpawn())
+                {
+                    mapGrid[x, y] = new MapObject(position, MapObjectType.Box, true);
                 }
             }
         }
@@ -225,38 +192,22 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
+    private bool ShouldSpawn()
+    {
+        return (Random.Range(0.0f, 100.0f) > (100 - objectsOnMapPercent));
+    }
 
-    private void GenerateWallsAround()
+    private void SetPlayerPositions()
     {
         Vector3 bottomLeft = new Vector3(-mapSize.x / 2.0f - 0.5f + decorationAreaSize, 0.5f, -mapSize.y / 2.0f - 0.5f + decorationAreaSize);
         Vector3 bottomRight = new Vector3(mapSize.x / 2.0f + 1.5f - decorationAreaSize, 0.5f, -mapSize.y / 2.0f - 0.5f + decorationAreaSize);
         Vector3 topLeft = new Vector3(-mapSize.x / 2.0f - 0.5f + decorationAreaSize, 0.5f, mapSize.y / 2.0f + 1.5f - decorationAreaSize);
         Vector3 topRight = new Vector3(mapSize.x / 2.0f + 1.5f - decorationAreaSize, 0.5f, mapSize.y / 2.0f + 1.5f - decorationAreaSize);
 
-        GenerateWall(bottomLeft, bottomRight, wallPrefab);
-        GenerateWall(bottomRight, topRight, wallPrefab);
-        GenerateWall(topRight, topLeft, wallPrefab);
-        GenerateWall(topLeft, bottomLeft, wallPrefab);
-
         playerPositions[0].transform.position = bottomLeft + new Vector3(1.0f, 0.0f, 1.0f);
         playerPositions[1].transform.position = bottomRight + new Vector3(-1.0f, 0.0f, 1.0f);
         playerPositions[2].transform.position = topLeft + new Vector3(1.0f, 0.0f, -1.0f);
         playerPositions[3].transform.position = topRight + new Vector3(-1.0f, 0.0f, -1.0f);
-    }
-
-    //TODO(vosure):Should be generated on server!
-    private void GenerateWall(Vector3 From, Vector3 To, GameObject prefab)
-    {
-        int x = (int)From.x;
-        int z = (int)From.z;
-        for (int i = 0; i < mapSize.x + 2; i++)
-        {
-            Vector3 position = Vector3.Lerp(From, To, i / (mapSize.x - decorationAreaSize * 2 + 2));
-
-            //SetRandomMaterial(prefab, wallMaterials);
-            //GameObject newBlock = Instantiate(prefab, position, Quaternion.identity);
-            //newBlock.transform.parent = mapHolder;
-        }
     }
 
     public enum MapObjectType
@@ -282,5 +233,3 @@ public class MapGenerator : MonoBehaviour
         }
     }
 }
-
-
