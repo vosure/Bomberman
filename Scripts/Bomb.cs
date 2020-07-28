@@ -25,7 +25,9 @@ public class Bomb : NetworkBehaviour
     [Command]
     void CmdExplode()
     {
-        AudioSource.PlayClipAtPoint(explosionSound[Random.Range(0, 5)], transform.position);
+
+        AudioManager.instance.PlaySound("Explosion", transform.position);
+        //AudioSource.PlayClipAtPoint(explosionSound[Random.Range(0, 5)], transform.position);
 
         if (NetworkServer.active)
             NetworkServer.Spawn(Instantiate(explosionPrefab, transform.position, Quaternion.identity));

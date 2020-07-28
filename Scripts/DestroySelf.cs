@@ -8,7 +8,6 @@ public class DestroySelf : MonoBehaviour
 
     private void Start ()
     {
-        Debug.Log("DESTROYED BOX HAS BEEN SPAWNED");
         Invoke("DestroyAfterDelay", delay);
     }
 

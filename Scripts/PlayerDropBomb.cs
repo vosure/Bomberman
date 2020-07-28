@@ -29,6 +29,7 @@ public class PlayerDropBomb : NetworkBehaviour
                 if (bombsAvailable > 0)
                 {
                     bombsAvailable = bombsAvailable - 1 < 0 ? 0 : bombsAvailable - 1;
+                    AudioManager.instance.PlaySound("BombPlacement", transform.position);
                     CmdDropBomb();
                     StartCoroutine(StartCooldown());
                 }
