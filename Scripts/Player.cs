@@ -67,7 +67,6 @@ public class Player : NetworkBehaviour
 
     private void Update()
     {
-        //Debug.Log("FPS - " + 1.0f / Time.deltaTime);
         if (canKick)
         {
             RaycastHit hit;
@@ -237,20 +236,11 @@ public class Player : NetworkBehaviour
         //Destroy(spawnEffectInstance, 3.0f);
     }
 
-    //public void OnCollisionEnter(Collision collision)
-    //{
-    //    if (collision.collider.CompareTag("Bomb"))
-    //    {
-    //        Debug.Log("Hit the bomb");
-    //    }
-    //}
-
     public void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Explosion"))
         {
             GameManager.GetPlayer(gameObject.name).RpcTakeDamage();
-            Debug.Log("hit by explosion");
         }
         if (other.CompareTag("PowerUp"))
         {
@@ -258,12 +248,9 @@ public class Player : NetworkBehaviour
             NetworkServer.Destroy(other.gameObject);
 
             Debug.Log("Took Power Up");
+            AudioManager.instance.PlaySound("TookPowerUp", transform.position);
 
             GameManager.GetPlayer(gameObject.name).RpcApplyPowerUp((int)powerUp.type);
         }
-        //if (other.CompareTag("Bomb"))
-        //{
-        //    Debug.Log("position on the bomb" + other.gameObject.GetComponentInParent<Transform>().position);
-        //}
     }
 }

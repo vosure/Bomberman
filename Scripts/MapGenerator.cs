@@ -147,7 +147,7 @@ public class MapGenerator : MonoBehaviour
             {
                 if ((y >= 2 + decorationAreaSize && y <= mapSize.y - 2 - decorationAreaSize) || (x >= 2 + decorationAreaSize && x <= mapSize.x - 2 - decorationAreaSize))
                 {
-                    if (ShouldSpawn())
+                    if (Utils.ShouldSpawn(objectsOnMapPercent))
                     {
                         mapGrid[x, y] = new MapObject(position, MapObjectType.Box, true);
                     }
@@ -161,7 +161,7 @@ public class MapGenerator : MonoBehaviour
             {
                 if (x % 2 != 0)
                 {
-                    if (ShouldSpawn())
+                    if (Utils.ShouldSpawn(objectsOnMapPercent))
                     {
                         mapGrid[x, y] = new MapObject(new Vector3(position.x, 0.0f, position.z), MapObjectType.Obstacle, true);
                     }
@@ -170,7 +170,7 @@ public class MapGenerator : MonoBehaviour
                 else
                 {
 
-                    if (ShouldSpawn())
+                    if (Utils.ShouldSpawn(objectsOnMapPercent))
                     {
                         mapGrid[x, y] = new MapObject(position, MapObjectType.Box, true);
                     }
@@ -180,7 +180,7 @@ public class MapGenerator : MonoBehaviour
             else
             {
 
-                if (ShouldSpawn())
+                if (Utils.ShouldSpawn(objectsOnMapPercent))
                 {
                     mapGrid[x, y] = new MapObject(position, MapObjectType.Box, true);
                 }
@@ -190,11 +190,6 @@ public class MapGenerator : MonoBehaviour
         {
             mapGrid[x, y] = new MapObject(position, MapObjectType.Decoration, true);
         }
-    }
-
-    private bool ShouldSpawn()
-    {
-        return (Random.Range(0.0f, 100.0f) > (100 - objectsOnMapPercent));
     }
 
     private void SetPlayerPositions()

@@ -9612,7 +9612,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ee028d1639ac0640bfaebe43213ccb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 0
+  type: 2
 --- !u!65 &5938982602203352637
 BoxCollider:
   m_ObjectHideFlags: 0

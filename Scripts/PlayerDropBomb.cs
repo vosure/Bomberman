@@ -56,7 +56,7 @@ public class PlayerDropBomb : NetworkBehaviour
             {
                 Vector3 bombPosition = new Vector3(Mathf.Round(transform.position.x + 0.5f) - 0.5f, bombPrefab.transform.position.y, Mathf.RoundToInt(transform.position.z + 0.5f) - 0.5f);
                 GameObject bomb = Instantiate(bombPrefab, bombPosition, bombPrefab.transform.rotation);
-                bomb.GetComponent<Bomb>().explosions = player.explosions;
+                bomb.GetComponent<Bomb>().SetExplosionsCount(player.explosions);
 
                 NetworkServer.Spawn(bomb);
             }

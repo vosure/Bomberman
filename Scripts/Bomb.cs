@@ -4,18 +4,14 @@ using UnityEngine.Networking;
 
 public class Bomb : NetworkBehaviour
 {
-    public AudioClip[] explosionSound;
     public GameObject explosionPrefab;
     public LayerMask collisionMask;
 
-    public GameObject firePowerUpPrefab;
-    public GameObject bombPowerUpPrefab;
-    public GameObject speedPowerUpPrefab;
-    //public GameObject kickPowerUpPrefab; //NOTE(vosure): Don't have this one
+    public GameObject[] powerUpPrefabs;
 
     private bool exploded = false;
 
-    public int explosions;
+    private int explosions;
 
     void Start()
     {
@@ -25,9 +21,7 @@ public class Bomb : NetworkBehaviour
     [Command]
     void CmdExplode()
     {
-
         AudioManager.instance.PlaySound("Explosion", transform.position);
-        //AudioSource.PlayClipAtPoint(explosionSound[Random.Range(0, 5)], transform.position);
 
         if (NetworkServer.active)
             NetworkServer.Spawn(Instantiate(explosionPrefab, transform.position, Quaternion.identity));
@@ -42,15 +36,6 @@ public class Bomb : NetworkBehaviour
         exploded = true;
         transform.Find("Collider").gameObject.SetActive(false);
         NetworkServer.Destroy(gameObject);
-    }
-
-    public void OnTriggerEnter(Collider other)
-    {
-        if (!exploded && other.CompareTag("Explosion"))
-        {
-            CancelInvoke("CmdExplode");
-            CmdExplode();
-        }
     }
 
     [Command]
@@ -70,7 +55,6 @@ public class Bomb : NetworkBehaviour
                 if (hit.collider.tag == "Box")
                 {
                     hit.collider.gameObject.GetComponent<Box>().DestroyAndSpawnNewOne();
-                    //NetworkServer.Destroy(hit.collider.gameObject);
 
                     CmdSpawnPowerUpAtPosition(hit.collider.gameObject.transform.position);
                     break;
@@ -88,29 +72,25 @@ public class Bomb : NetworkBehaviour
     private void CmdSpawnPowerUpAtPosition(Vector3 position)
     {
         Vector3 newPosition = new Vector3(position.x, -0.3f, position.z);
-        if (Random.Range(1, 100) <= GameSettings.powerUpChance)
+        if (Utils.ShouldSpawn(GameSettings.powerUpChance))
         {
-            int random = Random.Range(1, 4);
-
-            switch (random)
-            {
-                case 1:
-                    {
-                        NetworkServer.Spawn(Instantiate(firePowerUpPrefab, newPosition, Quaternion.identity));
-                        break;
-                    }
-                case 2:
-                    {
-                        NetworkServer.Spawn(Instantiate(bombPowerUpPrefab, newPosition, Quaternion.identity));
-                        break;
-                    }
-                case 3:
-                    {
-                        NetworkServer.Spawn(Instantiate(speedPowerUpPrefab, newPosition, Quaternion.identity));
-                        break;
-                    }
-            }
-
+            int random = Random.Range(0, 3);
+            NetworkServer.Spawn(Instantiate(powerUpPrefabs[random], newPosition, Quaternion.identity));
         }
     }
+
+    public void SetExplosionsCount(int explosions)
+    {
+        this.explosions = explosions;
+    }
+
+    public void OnTriggerEnter(Collider other)
+    {
+        if (!exploded && other.CompareTag("Explosion"))
+        {
+            CancelInvoke("CmdExplode");
+            CmdExplode();
+        }
+    }
+
 }

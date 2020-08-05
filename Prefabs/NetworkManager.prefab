@@ -57,13 +57,16 @@ MonoBehaviour:
   m_PlayerPrefab: {fileID: 174940, guid: 4cddbee81240ff04c8e7c994dc501178, type: 3}
   m_AutoCreatePlayer: 1
   m_PlayerSpawnMethod: 1
-  m_OfflineScene: Lobby
-  m_OnlineScene: MainScene
+  m_OfflineScene: Menu
+  m_OnlineScene: Game
   m_SpawnPrefabs:
   - {fileID: 124052, guid: 6291891f72f724c4eae6be6052e78735, type: 3}
   - {fileID: 177540, guid: 69dfce71c987ee94ebd40421847e3c8e, type: 3}
-  - {fileID: 9041784484703776796, guid: 097b6ade358a81e4e9e3ec155da560c1, type: 3}
+  - {fileID: 1000014038691284, guid: efebddd0b5766bd499be8b63f581de68, type: 3}
   - {fileID: 1000014038691284, guid: 8990da55eee73b74ebb9dc455c58982a, type: 3}
+  - {fileID: 1000013846074356, guid: 11e31a2ebb4e6e246bcf8c0ba034a031, type: 3}
+  - {fileID: 1000012970591572, guid: 7cafb89b5a0f61f479d0a748962abbbc, type: 3}
+  - {fileID: 1000013317980782, guid: 2cf6690298568294cb6b655c0a3aeb87, type: 3}
   m_CustomConfig: 0
   m_MaxConnections: 4
   m_ConnectionConfig:

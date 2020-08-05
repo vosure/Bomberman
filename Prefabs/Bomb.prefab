@@ -96,24 +96,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 427dedfdc1806f841a6be2c00394f68d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  explosionSound:
-  - {fileID: 8300000, guid: 57982447524447e48a6ab44c2c069597, type: 3}
-  - {fileID: 8300000, guid: 0809eb42cbacfa043b7c5df4c2e8f8b8, type: 3}
-  - {fileID: 8300000, guid: a6da645be3bfdd8408ba817803495abc, type: 3}
-  - {fileID: 8300000, guid: 620af521a7480f048a50e22fdfe77db0, type: 3}
-  - {fileID: 8300000, guid: d4758e4d7a34fc84ba6ba747ba5c4f5c, type: 3}
-  - {fileID: 8300000, guid: ea91464f3ff1eb242b2ba183f35a65ce, type: 3}
   explosionPrefab: {fileID: 177540, guid: 69dfce71c987ee94ebd40421847e3c8e, type: 3}
   collisionMask:
     serializedVersion: 2
     m_Bits: 256
-  firePowerUpPrefab: {fileID: 1000012970591572, guid: 7cafb89b5a0f61f479d0a748962abbbc,
-    type: 3}
-  bombPowerUpPrefab: {fileID: 1000013317980782, guid: 2cf6690298568294cb6b655c0a3aeb87,
-    type: 3}
-  speedPowerUpPrefab: {fileID: 1000013846074356, guid: 11e31a2ebb4e6e246bcf8c0ba034a031,
-    type: 3}
-  explosions: 0
+  powerUpPrefabs:
+  - {fileID: 1000013846074356, guid: 11e31a2ebb4e6e246bcf8c0ba034a031, type: 3}
+  - {fileID: 1000012970591572, guid: 7cafb89b5a0f61f479d0a748962abbbc, type: 3}
+  - {fileID: 1000013317980782, guid: 2cf6690298568294cb6b655c0a3aeb87, type: 3}
 --- !u!54 &5407224
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -71,7 +71,9 @@ MonoBehaviour:
     - {fileID: 8300000, guid: fd4a11b439160534b99606dd3a5cf12c, type: 3}
   - groupID: TookPowerUp
     group:
-    - {fileID: 0}
+    - {fileID: 8300000, guid: bed9b249fefabe04b8b1717d29209625, type: 3}
+    - {fileID: 8300000, guid: d3d30b04ae74100459d976b9d4f92e96, type: 3}
+    - {fileID: 8300000, guid: d0939501d6091294490e3deeed7a63ed, type: 3}
 --- !u!114 &8151629146191485384
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -84,5 +86,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 835e8512aa29902489ab23181b836e6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainTheme: {fileID: 0}
-  menuTheme: {fileID: 0}
+  mainTheme: {fileID: 8300000, guid: dc20442dc5a7aee41ba5656804c874b4, type: 3}
+  menuTheme: {fileID: 8300000, guid: 0a4f5b77733581b43990f28423ff0221, type: 3}
